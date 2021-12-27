@@ -409,7 +409,7 @@ GF_Err SetTrackDuration(GF_TrackBox *trak)
 	}
 	trak->Header->duration = trackDuration;
 	if (!trak->moov->mov->keep_utc && !gf_sys_is_test_mode() )
-		trak->Header->modificationTime = gf_isom_get_mp4time();
+		trak->Header->modificationTime = 0;
 	return GF_OK;
 }
 

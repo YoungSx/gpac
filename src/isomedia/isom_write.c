@@ -220,8 +220,8 @@ GF_EXPORT
 GF_Err gf_isom_set_creation_time(GF_ISOFile *movie, u64 ctime, u64 mtime)
 {
 	if (!movie || !movie->moov) return GF_BAD_PARAM;
-	movie->moov->mvhd->creationTime = ctime;
-	movie->moov->mvhd->modificationTime = mtime;
+	movie->moov->mvhd->creationTime = 0;
+	movie->moov->mvhd->modificationTime = 0;
 	return GF_OK;
 }
 
@@ -232,8 +232,8 @@ GF_Err gf_isom_set_track_creation_time(GF_ISOFile *movie,u32 trackNumber, u64 ct
 	trak = gf_isom_get_track_from_file(movie, trackNumber);
 	if (!trak) return GF_BAD_PARAM;
 
-	trak->Header->creationTime = ctime;
-	trak->Header->modificationTime = mtime;
+	trak->Header->creationTime = 0;
+	trak->Header->modificationTime = 0;
 	return GF_OK;
 }
 
@@ -245,8 +245,8 @@ GF_Err gf_isom_set_media_creation_time(GF_ISOFile *movie,u32 trackNumber, u64 ct
 	if (!trak) return GF_BAD_PARAM;
 	if (!trak->Media || !trak->Media->mediaHeader) return GF_ISOM_INVALID_FILE;
 
-	trak->Media->mediaHeader->creationTime = ctime;
-	trak->Media->mediaHeader->modificationTime = mtime;
+	trak->Media->mediaHeader->creationTime = 0;
+	trak->Media->mediaHeader->modificationTime = 0;
 	return GF_OK;
 }
 
@@ -348,7 +348,7 @@ GF_Err gf_isom_set_media_language(GF_ISOFile *movie, u32 trackNumber, char *code
 		}
 	}
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	return GF_OK;
 }
 
@@ -739,8 +739,8 @@ u32 gf_isom_new_track_from_template(GF_ISOFile *movie, GF_ISOTrackID trakID, u32
 			tkhd->creationTime = 0;
 			mdia->mediaHeader->creationTime = 0;
 		} else {
-			tkhd->creationTime = now;
-			mdia->mediaHeader->creationTime = now;
+			tkhd->creationTime = 0;
+			mdia->mediaHeader->creationTime = 0;
 		}
 
 	} else {
@@ -784,8 +784,8 @@ u32 gf_isom_new_track_from_template(GF_ISOFile *movie, GF_ISOTrackID trakID, u32
 	movie->last_created_track_id = tkhd->trackID;
 	
 	if (!movie->keep_utc && !gf_sys_is_test_mode() ) {
-		tkhd->modificationTime = now;
-	 	mdia->mediaHeader->modificationTime = now;
+		tkhd->modificationTime = 0;
+	 	mdia->mediaHeader->modificationTime = 0;
 	}
 
 	//OK, add our trak
@@ -827,7 +827,7 @@ GF_Err gf_isom_remove_stream_description(GF_ISOFile *movie, u32 trackNumber, u32
 	if (!trak || !trak->Media) return GF_BAD_PARAM;
 
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	entry = (GF_SampleEntryBox*)gf_list_get(trak->Media->information->sampleTable->SampleDescription->child_boxes, StreamDescriptionIndex - 1);
 	if (!entry) return GF_BAD_PARAM;
@@ -869,7 +869,7 @@ GF_Err gf_isom_new_mpeg4_description(GF_ISOFile *movie,
 	e = gf_odf_desc_copy((GF_Descriptor *)esd, (GF_Descriptor **)&new_esd);
 	if (e) return e;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	e = Track_SetStreamDescriptor(trak, 0, dataRefIndex, new_esd, outDescriptionIndex);
 	if (e) {
 		gf_odf_desc_del((GF_Descriptor *)new_esd);
@@ -1031,7 +1031,7 @@ GF_Err gf_isom_add_sample(GF_ISOFile *movie, u32 trackNumber, u32 StreamDescript
 
 
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	return SetTrackDuration(trak);
 }
 
@@ -1107,7 +1107,7 @@ GF_Err gf_isom_add_sample_shadow(GF_ISOFile *movie, u32 trackNumber, GF_ISOSampl
 	e = Media_SetDuration(trak);
 	if (e) return e;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	return SetTrackDuration(trak);
 }
 
@@ -1208,7 +1208,7 @@ GF_Err gf_isom_add_sample_reference(GF_ISOFile *movie, u32 trackNumber, u32 Stre
 	if (e) return e;
 
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	//OK, update duration
 	e = Media_SetDuration(trak);
 	if (e) return e;
@@ -1305,7 +1305,7 @@ static GF_Err gf_isom_set_last_sample_duration_internal(GF_ISOFile *movie, u32 t
 		stts->w_currentSampleNum = trak->Media->information->sampleTable->SampleSize->sampleCount;
 	}
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	trak->Media->mediaHeader->duration = mdur;
 	return SetTrackDuration(trak);
 }
@@ -1358,7 +1358,7 @@ GF_Err gf_isom_update_sample(GF_ISOFile *movie, u32 trackNumber, u32 sampleNumbe
 	}
 	if (e) return e;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	gf_isom_disable_inplace_rewrite(movie);
 	return GF_OK;
@@ -1395,7 +1395,7 @@ GF_Err gf_isom_update_sample_reference(GF_ISOFile *movie, u32 trackNumber, u32 s
 	if (e) return e;
 
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	return GF_OK;
 }
 
@@ -1555,7 +1555,7 @@ GF_Err gf_isom_add_desc_to_description(GF_ISOFile *movie, u32 trackNumber, u32 S
 
 	//and add it to the ESD EXCEPT IPI PTR (we need to translate from ES_ID to TrackID!!!
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	switch (desc->tag) {
 	case GF_ODF_IPI_PTR_TAG:
@@ -1647,7 +1647,7 @@ GF_Err gf_isom_change_mpeg4_description(GF_ISOFile *movie, u32 trackNumber, u32 
 	if (entry == NULL) return GF_BAD_PARAM;
 
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	//duplicate our desc
 	e = gf_odf_desc_copy((GF_Descriptor *)newESD, (GF_Descriptor **)&esd);
 	if (e) return e;
@@ -1682,7 +1682,7 @@ GF_Err gf_isom_set_visual_info(GF_ISOFile *movie, u32 trackNumber, u32 StreamDes
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	//valid for MPEG visual, JPG and 3GPP H263
 	if (entry->internal_type == GF_ISOM_SAMPLE_ENTRY_VIDEO) {
@@ -1758,7 +1758,7 @@ GF_Err gf_isom_set_pixel_aspect_ratio(GF_ISOFile *movie, u32 trackNumber, u32 St
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -1802,7 +1802,7 @@ GF_Err gf_isom_set_visual_color_info(GF_ISOFile *movie, u32 trackNumber, u32 Str
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_OK;
 
@@ -1857,7 +1857,7 @@ GF_Err gf_isom_set_dolby_vision_profile(GF_ISOFile* movie, u32 trackNumber, u32 
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_OK;
 	switch (entry->type) {
@@ -1925,7 +1925,7 @@ GF_Err gf_isom_set_high_dynamic_range_info(GF_ISOFile* movie, u32 trackNumber, u
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -1976,7 +1976,7 @@ GF_Err gf_isom_set_clean_aperture(GF_ISOFile *movie, u32 trackNumber, u32 Stream
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -2065,7 +2065,7 @@ GF_Err gf_isom_update_aperture_info(GF_ISOFile *movie, u32 trackNumber, Bool rem
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (ventry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (ventry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -2137,7 +2137,7 @@ GF_Err gf_isom_set_image_sequence_coding_constraints(GF_ISOFile *movie, u32 trac
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -2178,7 +2178,7 @@ GF_Err gf_isom_set_image_sequence_alpha(GF_ISOFile *movie, u32 trackNumber, u32 
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_VIDEO) return GF_BAD_PARAM;
 
@@ -2231,7 +2231,7 @@ GF_Err gf_isom_set_audio_info(GF_ISOFile *movie, u32 trackNumber, u32 StreamDesc
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_AUDIO) return GF_BAD_PARAM;
 	aud_entry = (GF_AudioSampleEntryBox*) entry;
@@ -2404,7 +2404,7 @@ GF_Err gf_isom_set_audio_layout(GF_ISOFile *movie, u32 trackNumber, u32 sampleDe
 	//no support for generic sample entries (eg, no MPEG4 descriptor)
 	if (entry == NULL) return GF_BAD_PARAM;
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (entry->internal_type != GF_ISOM_SAMPLE_ENTRY_AUDIO) return GF_BAD_PARAM;
 	aud_entry = (GF_AudioSampleEntryBox*) entry;
@@ -4271,7 +4271,7 @@ GF_Err gf_isom_clone_sample_description(GF_ISOFile *the_file, u32 trackNumber, G
 		if (e) goto exit;
 	}
 	if (!the_file->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 	/*overwrite dref*/
 	((GF_SampleEntryBox *)entry)->dataReferenceIndex = dataRefIndex;
 	e = gf_list_add(trak->Media->information->sampleTable->SampleDescription->child_boxes, entry);
@@ -4310,7 +4310,7 @@ GF_Err gf_isom_new_generic_sample_description(GF_ISOFile *movie, u32 trackNumber
 		if (e) return e;
 	}
 	if (!movie->keep_utc)
-		trak->Media->mediaHeader->modificationTime = gf_isom_get_mp4time();
+		trak->Media->mediaHeader->modificationTime = 0;
 
 	if (gf_isom_is_video_handler_type(trak->Media->handler->handlerType)) {
 		GF_GenericVisualSampleEntryBox *entry;

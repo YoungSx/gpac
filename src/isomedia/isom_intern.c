@@ -1262,9 +1262,9 @@ GF_Err gf_isom_insert_moov(GF_ISOFile *file)
 		mvhd->creationTime = mvhd->modificationTime = 0;
 	} else {
 		u64 now = gf_isom_get_mp4time();
-		mvhd->creationTime = now;
+		mvhd->creationTime = 0;
 		if (!file->keep_utc)
-			mvhd->modificationTime = now;
+			mvhd->modificationTime = 0;
 	}
 
 	mvhd->nextTrackID = 1;

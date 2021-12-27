@@ -1759,7 +1759,7 @@ GF_Err gf_isom_close_segment(GF_ISOFile *movie, s32 subsegments_per_sidx, GF_ISO
 		/*we allocated our sidx to have one ref per "segment" (eg per call to close_segment)*/
 		if (movie->root_sidx) {
 			if (!movie->root_sidx_index) {
-				sidx->earliest_presentation_time = prev_earliest_cts;
+				sidx->earliest_presentation_time = 0;
 			}
 			nb_subsegs = 1;
 			frags_per_subseg = count;
